@@ -104,9 +104,23 @@ class Hello(object):
     </head>
     <!-- 啟動 brython() -->
     <body onload="brython()">
-    <form method=\"post\" action=\"doAct\">
+    <form method=\"post\" action=\"spuraction\">
         <fieldset>
-        <legend>40223124齒輪參數表單:</legend>
+        <legend>40223124的drawspur齒輪參數表單(只跑字):</legend>
+        齒數:<br />
+        <input type=\"text\" name=\"ng1\"><br />
+        </select>
+        模數:<br />
+        <input type=\"text\" name=\"m\"><br />
+        壓力角(>33時會有錯誤):<br />
+        <input type=\"text\" name=\"inp2\"><br />
+        <input type=\"submit\" value=\"drawspur\">
+        <input type=\"reset\" value=\"重填\">
+    </form>
+
+    <form method=\"post\" action=\"drawspuraction\">
+        <fieldset>
+        <legend>40223124的drawspur齒輪參數表單(會畫圖):</legend>
         齒數:<br />
         <input type=\"text\" name=\"ng1\"><br />
 
@@ -115,7 +129,7 @@ class Hello(object):
         <input type=\"text\" name=\"m\"><br />
         壓力角(>33時會有錯誤):<br />
         <input type=\"text\" name=\"inp2\"><br />
-        <input type=\"submit\" value=\"確定\">
+        <input type=\"submit\" value=\"drawspur\">
         <input type=\"reset\" value=\"重填\">
     </form>
         
@@ -260,12 +274,12 @@ class Hello(object):
     '''
 
         return outstring
-    #@+node:2014fall.20141215194146.1793: *3* doAct
+    #@+node:2014fall.20141215194146.1793: *3* drawspuraction
     @cherrypy.expose
-    # N 為齒數, M 為模數, P 為壓力角
-    def doAct(self, m=None, ng1=None,inp2=None):
+    # ng1為齒數, m為模數, inp2 為壓力角
+    def drawspuraction(self, m=None, ng1=None,inp2=None):
         outString = ""
-        outString +="藍色，40223124丞宗繪製<br />齒數:"+ng1
+        outString +="紫色，40223124丞宗繪製<br />齒數:"+ng1
         outString += "<br />"
         outString +="模數:"+m
         outString += "<br />"
@@ -326,7 +340,7 @@ class Hello(object):
     # 使用 ctx.save() 與 ctx.restore() 以確保各齒輪以相對座標進行旋轉繪圖
     ctx.save()
     # translate to the origin of second gear
-    spur.Spur(ctx).Gear(x_g1,y_g1,rp_g1,n_g1, pa, "blue")
+    spur.Spur(ctx).Gear(x_g1,y_g1,rp_g1,n_g1, pa, "purple")
     ctx.restore()
     ctx.font = "10px Verdana";
     ctx.fillText("組員:24號袁丞宗所繪製",x_g1-60, y_g1-10);
@@ -344,6 +358,19 @@ class Hello(object):
 
         return outString
 
+    #@+node:.20150428092020.1853: *3* spuraction
+    @cherrypy.expose
+    # ng1為齒數, m為模數, inp2 為壓力角
+    def spuraction(self, m=None, ng1=None,inp2=None):
+        outString = ""
+        outString +="齒數:"+ng1
+        outString += "<br />"
+        outString +="模數:"+m
+        outString += "<br />"
+        outString +="壓力角:"+inp2
+        outString += "<br />"
+        outString += self.menuLink()
+        return outString
     #@-others
     def default(self):
         sys.exit()
@@ -370,7 +397,7 @@ application_conf = {'/static':{
     }
 root = Hello()
 root.gear = gear.Gear()
-cherrypy.server.socket_port = 8082
+cherrypy.server.socket_port = 8083
 cherrypy.server.socket_host = '127.0.0.1'
 if 'OPENSHIFT_REPO_DIR' in os.environ.keys():
     # 表示在 OpenSfhit 執行
